@@ -27,19 +27,29 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { date, userId, doctorId } = body;
+        // const { date, userId, doctorId } = body;
+        const { date, doctorId } = body;
 
-        if(!date || !userId || !doctorId) {
+        // if(!date || !userId || !doctorId) {
+        //     return NextResponse.json({
+        //         error: "Missinng required fields",
+        //     }, {
+        //         status: 400,
+        //     });
+        // }
+        if(!date || !doctorId) {
             return NextResponse.json({
                 error: "Missinng required fields",
             }, {
                 status: 400,
             });
         }
+        // use static userId
+        const userId = 1;
 
         const data = await prisma.appointment.create({
             data: {
-                date,
+                date: new Date(date),
                 userId,
                 doctorId,
             },
@@ -47,6 +57,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(data);
     } catch(error) {
+        console.log(error);
         return NextResponse.json({
             error: error,
         }, {
